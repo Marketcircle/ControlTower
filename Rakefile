@@ -29,7 +29,7 @@ GEM_SPEC = Gem::Specification.new do |spec|
                    ext/CTParser/extconf.rb )
   spec.extensions << 'ext/CTParser/extconf.rb'
   spec.executable = 'control_tower'
-  spec.add_dependency('rack', '= 1.2.1')
+  spec.add_dependency('rack', '~> 1.4.0')
 end
 
 verbose(true)
