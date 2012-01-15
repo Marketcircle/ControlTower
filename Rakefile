@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'rake/gempackagetask'
 
-CT_VERSION = '1.1'
+CT_VERSION = '1.1.0'
 
 GEM_SPEC = Gem::Specification.new do |spec|
   spec.name = 'control_tower'
