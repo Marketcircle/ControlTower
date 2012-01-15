@@ -47,7 +47,7 @@ task :build do
   cflags.sub!(/-O./, '-O3')
   cflags << " -Wall"
 
-  Dir.chdir('ext/CTParser') do 
+  Dir.chdir('ext/CTParser') do
     sh "#{gcc} #{cflags} -fobjc-gc CTParser.m -c -o CTParser.o"
     sh "#{gcc} #{cflags} http11_parser.c -c -o http11_parser.o"
     sh "#{RbConfig::CONFIG['LDSHARED']} CTParser.o http11_parser.o -o CTParser.bundle"
@@ -85,4 +85,3 @@ desc "Run Control Tower"
 task :run do
   sh "macruby -I./lib -I./ext/CTParser bin/control_tower"
 end
-
