@@ -3,7 +3,6 @@
 
 require 'socket'
 require 'tempfile'
-# $: << File.join(File.dirname(__FILE__), 'control_tower', 'vendor')
 require 'rack'
 require 'control_tower/rack_socket'
 require 'control_tower/server'
