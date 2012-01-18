@@ -11,7 +11,7 @@ module ControlTower
   class RackSocket
     VERSION = [1,0].freeze
     QUIESCING_MSG = 'Resource limit reached. Redirecting until server quits (will auto-restart).'
-    
+
     def log(msg, prepend_newline=false)
       time = Time.now
       tnum = Thread.current.inspect
@@ -24,7 +24,7 @@ module ControlTower
     def rsize
       `ps -o rss= -p #{Process.pid}`.to_i / 1024.0
     end
-    
+
     def initialize(host, port, server, concurrent)
       @log_queue = Dispatch::Queue.new('log_queue')
       @log_group = Dispatch::Group.new
@@ -65,7 +65,7 @@ module ControlTower
               else
                 log "Opening back up... a request snuck in."
                 @status = :open  # @auth_sessions isn't empty, which means there are current active sessions.  Let them finish (and as a side-effect possibly accepting new connections).
-                sleep 1              
+                sleep 1
               end
             else
               log "empty session list, but not at memory threshold yet (used=#{mem_used}, threshold=#{@mem_high_water_mark})"
@@ -109,7 +109,7 @@ module ControlTower
 
         log "Control Tower: waiting for connection..."
         connection, remote_addrinfo_str = @socket.accept
-        
+
         # -------------- PROCESS REQUEST ASYNCHRONOUSLY ----------------
 
         @request_queue.async(@request_group) do
@@ -210,16 +210,16 @@ module ControlTower
     def close
       puts "Received shutdown signal.  Waiting for current requests to complete..."
       @status = :close
-      
+
       # 60 seconds to empty the request queue
       Dispatch::Source.timer(60, 0, 1, Dispatch::Queue.concurrent) do
         puts "Timed out waiting for connections to close. Stopping server with pid=#{Process.pid}."
         exit
       end
-      
+
       @request_group.wait
-      
-      puts "All requests completed. Stopping server with pid=#{Process.pid}."      
+
+      puts "All requests completed. Stopping server with pid=#{Process.pid}."
       exit
     end
 
@@ -235,7 +235,7 @@ module ControlTower
       content_length = 0
       content_uploaded = 0
       connection_handle = NSFileHandle.alloc.initWithFileDescriptor(connection.fileno)
-      
+
       while (parsing_headers || content_uploaded < content_length) do
         # Read the availableData on the socket and give up if there's nothing
         incoming_bytes = connection_handle.availableData
@@ -257,7 +257,7 @@ module ControlTower
           env['rack.input'].appendData(incoming_bytes)
         end
       end
-      
+
       if content_length > 1024 * 1024
         body_file = Tempfile.new('control-tower-request-body-')
         NSFileHandle.alloc.initWithFileDescriptor(body_file.fileno).writeData(env['rack.input'])
