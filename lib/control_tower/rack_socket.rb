@@ -8,6 +8,11 @@ require 'stringio'
 CTParser # Making sure the Objective-C class is pre-loaded
 
 module ControlTower
+  class DummyLogger
+    def async arg
+    end
+  end
+
   class RackSocket
     VERSION = [1,0].freeze
     QUIESCING_MSG = 'Resource limit reached. Redirecting until server quits (will auto-restart).'
@@ -26,9 +31,13 @@ module ControlTower
     end
 
     def initialize(host, port, server, concurrent)
-      @log_queue = Dispatch::Queue.new('log_queue')
-      @log_group = Dispatch::Group.new
-      
+      if ENV['CTLOG']
+        @log_queue = Dispatch::Queue.new('log_queue')
+        @log_group = Dispatch::Group.new
+      else
+        @log_queue = ControlTower::DummyLogger.new
+      end
+
       @under_launchd = (port == 0)
       @mem_high_water_mark = ENV['CT_MEM_BOUNCE_MB'].to_i || -1 if @under_launchd  # in megabytes; negative instructs to not bounce
       log "STARTING with pid=#{Process.pid}" + (@mem_high_water_mark ? " and memory bounce point=#{@mem_high_water_mark} MB" : "")
