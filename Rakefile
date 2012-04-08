@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'rake/gempackagetask'
+require 'rubygems/package_task'
 
 CT_VERSION = '1.1.0'
 
@@ -76,7 +76,7 @@ file 'lib/CTParser.bundle' => ['ext/CTParser/CTParser.bundle'] do
   FileUtils.cp('ext/CTParser/CTParser.bundle', 'lib/CTParser.bundle')
 end
 
-Rake::GemPackageTask.new(GEM_SPEC) do |pkg|
+Gem::PackageTask.new(GEM_SPEC) do |pkg|
   pkg.need_zip = false
   pkg.need_tar = true
 end
@@ -85,3 +85,4 @@ desc "Run Control Tower"
 task :run do
   sh "macruby -I./lib -I./ext/CTParser bin/control_tower"
 end
+
