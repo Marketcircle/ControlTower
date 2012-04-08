@@ -34,18 +34,18 @@ end
 
 verbose(true)
 
-desc "Same as all"
+desc 'Same as all'
 task :default => :all
 
-desc "Build everything"
+desc 'Build everything'
 task :all => ['build', 'gem']
 
-desc "Build CTParser"
+desc 'Build CTParser'
 task :build do
   gcc = RbConfig::CONFIG['CC']
   cflags = RbConfig::CONFIG['CFLAGS'] + ' ' + RbConfig::CONFIG['ARCH_FLAG']
   cflags.sub!(/-O./, '-O3')
-  cflags << " -Wall"
+  cflags << ' -Wall'
 
   Dir.chdir('ext/CTParser') do
     sh "#{gcc} #{cflags} -fobjc-gc CTParser.m -c -o CTParser.o"
@@ -54,12 +54,12 @@ task :build do
   end
 end
 
-desc "Clean packages and extensions"
+desc 'Clean packages and extensions'
 task :clean do
-  sh "rm -rf pkg ext/CTParser/*.o ext/CTParser/*.bundle lib/*.bundle"
+  sh 'rm -rf pkg ext/CTParser/*.o ext/CTParser/*.bundle lib/*.bundle'
 end
 
-desc "Install as a standard library"
+desc 'Install as a standard library'
 task :stdlib_install => [:build] do
   prefix = (ENV['DESTDIR'] || '')
   dest = File.join(prefix, RbConfig::CONFIG['sitelibdir'])
@@ -87,8 +87,7 @@ Gem::PackageTask.new(GEM_SPEC) do |pkg|
   pkg.need_tar = true
 end
 
-desc "Run Control Tower"
+desc 'Run Control Tower'
 task :run do
-  sh "macruby -I./lib -I./ext/CTParser bin/control_tower"
+  sh 'macruby -I./lib -I./ext/CTParser bin/control_tower'
 end
-
