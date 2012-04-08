@@ -70,6 +70,12 @@ task :stdlib_install => [:build] do
   sh "cp ext/CTParser/CTParser.bundle \"#{dest}\""
 end
 
+desc "Install as a ruby gem"
+task :install => :gem do
+  require 'rubygems/installer'
+  Gem::Installer.new("pkg/#{GEM_SPEC.file_name}").install
+end
+
 file 'ext/CTParser/CTParser.bundle' => 'build'
 
 file 'lib/CTParser.bundle' => ['ext/CTParser/CTParser.bundle'] do
