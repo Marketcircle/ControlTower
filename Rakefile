@@ -71,9 +71,18 @@ task :stdlib_install => [:build] do
 end
 
 desc "Install as a ruby gem"
-task :install => :gem do
+task :install => [:gem, :install_runtime_dependencies] do
   require 'rubygems/installer'
   Gem::Installer.new("pkg/#{GEM_SPEC.file_name}").install
+end
+
+desc "Install runtime dependencies"
+task :install_runtime_dependencies do
+  require 'rubygems/dependency_installer'
+  GEM_SPEC.runtime_dependencies.each do |dep|
+    puts "Installing #{dep.name} (#{dep.requirement})"
+    Gem::DependencyInstaller.new.install(dep.name, dep.requirement)
+  end
 end
 
 file 'ext/CTParser/CTParser.bundle' => 'build'
